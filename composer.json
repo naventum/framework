@@ -1,0 +1,34 @@
+{
+    "name": "naventum/framework",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Naventum\\Framework\\": "src/"
+        },
+        "files": [
+            "src/helpers.php"
+        ]
+    },
+    "authors": [
+        {
+            "name": "RyoDevz",
+            "email": "ytryo789@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": "^7.3|^8.0",
+        "ext-json": "*",
+        "ext-mbstring": "*",
+        "ext-openssl": "*",
+        "illuminate/database": "8.x-dev",
+        "ryodevz/validator": "dev-main",
+        "symfony/error-handler": "5.4.x-dev",
+        "symfony/routing": "5.4.x-dev",
+        "vlucas/phpdotenv": "5.4.x-dev"
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "sort-packages": true
+    }
+}
