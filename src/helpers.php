@@ -6,12 +6,11 @@ use Naventum\Framework\Illuminate\Support\Paths;
 use Naventum\Framework\Illuminate\Support\Request;
 use Naventum\Framework\Illuminate\Support\Session;
 use Naventum\Framework\Illuminate\Support\View;
-use Naventum\Framework\Path;
 
 if (!function_exists('view')) {
     function view(string $view, $data = [])
     {
-        return View::make($view);
+        return View::make($view, null, $data);
     }
 }
 
@@ -58,8 +57,6 @@ if (!function_exists('config')) {
     function config(string $filename)
     {
         return Config::make($filename, '../config/')->config();
-
-        // return require '../config/' . $file . '.php';
     }
 }
 
@@ -67,6 +64,13 @@ if (!function_exists('__')) {
     function __($text)
     {
         return htmlspecialchars($text);
+    }
+}
+
+if (!function_exists('env')) {
+    function env(string $name, $default = null)
+    {
+        return getenv($name) ?? $default;
     }
 }
 
