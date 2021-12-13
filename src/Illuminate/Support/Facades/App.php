@@ -119,7 +119,9 @@ class App extends Route
         $params = $this->activeRoute;
 
         foreach (['_controller', '_middlewares', '_modelBindings', '_route', '_method', '_classBindings'] as $name) {
-            unset($params[$name]);
+            if(isset($params[$name])) {
+                unset($params[$name]);
+            }
         }
 
         return $this->activeRouteParams = $params;
