@@ -3,6 +3,7 @@
 namespace Naventum\Framework\Illuminate\Support\Facades;
 
 use Naventum\Framework\Illuminate\Foundation\Support\Debug\Debugger;
+use Naventum\Framework\Illuminate\Foundation\Support\Init;
 use Symfony\Component\ErrorHandler\ErrorHandler;
 
 class App extends Route
@@ -17,17 +18,13 @@ class App extends Route
 
     public function make()
     {
-        Debugger::check();
+        $this->debug();
 
         return ErrorHandler::call(function () {
-            Auth::start();
 
             $this->registerDefaultSessions();
-
-            static::__startRouting();
             $this->runProviders();
-
-            $this->setActiveRoute(Route::getRoute($this->getRequestPath()));
+            $this->setActiveRoute($this->getRoute($this->getRequestPath()));
 
             if (isset($this->activeRoute['_controller']) && isset($this->activeRoute['_method'])) {
                 $this->setActiveControllerMethod();
@@ -47,10 +44,17 @@ class App extends Route
         });
     }
 
+    public function debug()
+    {
+        Debugger::register();
+
+        return new Init;
+    }
+
     private function registerDefaultSessions()
     {
         if (!isset($_SESSION['flash_data'])) {
-            $_SESSION['flash_data'] = [];
+            return $_SESSION['flash_data'] = [];
         }
     }
 
@@ -119,7 +123,9 @@ class App extends Route
         $params = $this->activeRoute;
 
         foreach (['_controller', '_middlewares', '_modelBindings', '_route', '_method', '_classBindings'] as $name) {
-            unset($params[$name]);
+            if (isset($params[$name])) {
+                unset($params[$name]);
+            }
         }
 
         return $this->activeRouteParams = $params;
@@ -143,7 +149,12 @@ class App extends Route
         $activeController = $this->activeController;
         $activeMethod = $this->activeMethod;
 
-        return $activeController->$activeMethod(...array_values($this->activeRouteParams));
+        return $activeController->$activeMethod(...$this->getActiveRouteParams());
+    }
+
+    private function getActiveRouteParams()
+    {
+        return array_values($this->activeRouteParams);
     }
 
     private function getRequestPath()
