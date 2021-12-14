@@ -6,6 +6,7 @@ use Dotenv\Dotenv;
 use Dotenv\Repository\Adapter\EnvConstAdapter;
 use Dotenv\Repository\Adapter\PutenvAdapter;
 use Dotenv\Repository\RepositoryBuilder;
+use Naventum\Framework\Illuminate\Foundation\Database;
 use Naventum\Framework\Illuminate\Support\Facades\App;
 use Naventum\Framework\Illuminate\Support\Facades\Auth;
 use Naventum\Framework\Illuminate\Support\Facades\Route;
@@ -44,6 +45,13 @@ class Init
     public function session()
     {
         Auth::start();
+
+        return $this;
+    }
+
+    public function db()
+    {
+        Database::register();
 
         return $this;
     }
