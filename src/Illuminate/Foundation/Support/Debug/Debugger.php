@@ -11,10 +11,10 @@ class Debugger
     {
         $config = config('app');
 
-        ErrorHandler::register();
-
         if ($config->env === 'development') {
             Debug::enable();
         }
+
+        ErrorHandler::register();
     }
 }
