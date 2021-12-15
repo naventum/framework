@@ -22,6 +22,7 @@
         "ext-mbstring": "*",
         "ext-openssl": "*",
         "illuminate/database": "8.x-dev",
+        "jenssegers/blade": "dev-master",
         "ryodevz/validator": "dev-main",
         "symfony/error-handler": "5.4.x-dev",
         "symfony/routing": "5.4.x-dev",
