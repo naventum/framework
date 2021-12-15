@@ -74,6 +74,13 @@ if (!function_exists('config')) {
     }
 }
 
+if (!function_exists('configArray')) {
+    function configArray(string $filename)
+    {
+        return Config::make($filename, '../config/')->getArray();
+    }
+}
+
 if (!function_exists('__')) {
     function __($text)
     {

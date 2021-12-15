@@ -3,6 +3,7 @@
 namespace Naventum\Framework\Illuminate\Foundation\Support;
 
 use Jenssegers\Blade\Blade;
+use ReflectionClass;
 
 class View
 {
@@ -50,6 +51,24 @@ class View
 
     private function makeBlade(string $viewPath)
     {
-        return $this->makeView(new Blade($viewPath, base_path() . '/storage/framework/views'));
+        $blade = new Blade($viewPath, base_path() . '/storage/framework/views');
+
+        $blade->compiler()->components($this->getComponentClasses());
+
+        $app = \Illuminate\Container\Container::getInstance();
+
+        $app->bind(
+            'Illuminate\Contracts\View\Factory',
+            function ($app) use ($blade) {
+                return $blade;
+            }
+        );
+
+        return $this->makeView($blade);
+    }
+
+    public function getComponentClasses()
+    {
+        return configArray('components');
     }
 }
