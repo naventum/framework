@@ -69,6 +69,11 @@ class Config
         }
     }
 
+    public function getArray()
+    {
+        return static::$config[static::$currentKey];
+    }
+
     public function config()
     {
         return (new ToObject(static::$config[static::$currentKey]))->object();
