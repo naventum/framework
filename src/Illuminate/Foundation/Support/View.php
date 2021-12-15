@@ -21,7 +21,7 @@ class View
 
     public function make()
     {
-        $view = $this->initView($this->view . '.blade.php')->render();
+        $view = $this->getView(str_replace('.', '/', $this->view) . '.blade.php')->render();
 
         $_SESSION['flash_data'] = [];
 
@@ -30,7 +30,7 @@ class View
         return $view;
     }
 
-    private function initView(string $viewWithExtension)
+    private function getView(string $viewWithExtension)
     {
         if (file_exists(view_path() . '/' . $viewWithExtension)) {
             return $this->makeBlade(view_path());
