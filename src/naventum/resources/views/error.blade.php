@@ -2,10 +2,10 @@
 <html lang="en">
 
 <head>
-    <meta charset="utf-8">
+    <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title><?= isset($data['message']) ? __($data['message']) : 'Error' ?></title>
+    <title>{{ isset($message) ? $message : 'Error' }}</title>
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
@@ -54,14 +54,15 @@
 <body>
     <div class="flex-center position-ref full-height">
         <div class="code">
-            <?= __($data['code']) ?>
+            {{ $code }}
         </div>
 
-        <?php if (isset($data['message'])) : ?>
-            <div class="message" style="padding: 10px;">
-                <?= __($data['message']) ?>
-            </div>
-        <?php endif ?>
+        @isset($message)
+        <div class="message" style="padding: 10px;">
+            {{ $message }}
+        </div>
+        @endisset
+
     </div>
 </body>
 

@@ -2,21 +2,14 @@
 
 namespace Naventum\Framework\Illuminate\Support;
 
+use Naventum\Framework\Illuminate\Foundation\Support\View as SupportView;
+
 class View
 {
     public static function make(string $view, string $viewDefaultPath = null, $data = [])
     {
-        $viewWithExtension = $view . '.php';
-        $fullPath = $viewDefaultPath . '/' . $viewWithExtension;
+        $blade = new SupportView($view, $viewDefaultPath, $data);
 
-        if (file_exists(view_path() . '/' . $viewWithExtension)) {
-            $response = require view_path() . '/' . $viewWithExtension;
-        } else {
-            $response = require $fullPath;
-        }
-
-        $_SESSION['flash_data'] = [];
-
-        return $response;
+        return $blade->make();
     }
 }
