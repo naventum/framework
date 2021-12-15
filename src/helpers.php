@@ -14,6 +14,20 @@ if (!function_exists('view')) {
     }
 }
 
+if (!function_exists('url')) {
+    function url(string $path = null)
+    {
+        return config('app')->url . $path;
+    }
+}
+
+if (!function_exists('assets')) {
+    function assets(string $path = null)
+    {
+        return config('app')->asset_url . $path;
+    }
+}
+
 if (!function_exists('toVariadic')) {
     function toVariadic(...$data)
     {

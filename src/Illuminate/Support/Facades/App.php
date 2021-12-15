@@ -4,7 +4,8 @@ namespace Naventum\Framework\Illuminate\Support\Facades;
 
 use Naventum\Framework\Illuminate\Foundation\Support\Debug\Debugger;
 use Naventum\Framework\Illuminate\Foundation\Support\Init;
-use Symfony\Component\ErrorHandler\ErrorHandler;
+use Naventum\Framework\Illuminate\Foundation\Support\Middleware;
+use Naventum\Framework\Illuminate\Foundation\Support\Provider;
 
 class App extends Route
 {
@@ -20,28 +21,27 @@ class App extends Route
     {
         $this->debug();
 
-        return ErrorHandler::call(function () {
+        $this->registerDefaultFlashData();
+        $this->runProviders();
+        $this->setActiveRoute($this->getRoute($this->getRequestPath()));
 
-            $this->registerDefaultSessions();
-            $this->runProviders();
-            $this->setActiveRoute($this->getRoute($this->getRequestPath()));
+        if (isset($this->activeRoute['_controller']) && isset($this->activeRoute['_method'])) {
+            $this->setActiveControllerMethod();
 
-            if (isset($this->activeRoute['_controller']) && isset($this->activeRoute['_method'])) {
-                $this->setActiveControllerMethod();
+            $runMiddlewares = $this->runMiddlewares();
 
-                if (!$this->runMiddlewares()) {
-                    return;
-                }
-
-                if (!$this->setModelBindings()) {
-                    return abort(404);
-                }
-
-                $this->setClassBindings();
-
-                return $this->run();
+            if (!$runMiddlewares) {
+                return $runMiddlewares;
             }
-        });
+
+            if (!$this->setModelBindings()) {
+                return abort(404);
+            }
+
+            $this->setClassBindings();
+
+            return $this->run();
+        }
     }
 
     public function debug()
@@ -51,7 +51,7 @@ class App extends Route
         return new Init;
     }
 
-    private function registerDefaultSessions()
+    private function registerDefaultFlashData()
     {
         if (!isset($_SESSION['flash_data'])) {
             return $_SESSION['flash_data'] = [];
@@ -62,10 +62,7 @@ class App extends Route
     {
         $config = $this->getConfig();
 
-        foreach ($config->providers as $provider) {
-            $provider = new $provider;
-            $provider->boot();
-        }
+        return Provider::runAllBy($config->providers);
     }
 
     private function getConfig()
@@ -75,16 +72,7 @@ class App extends Route
 
     private function runMiddlewares()
     {
-        foreach ($this->activeRoute['_middlewares'] as $middleware) {
-
-            $middleware = new $middleware;
-
-            if (!$middleware->handle()) {
-                return false;
-            }
-        }
-
-        return true;
+        return Middleware::runAllBy($this->activeRoute['_middlewares']);
     }
 
     private function setClassBindings()
