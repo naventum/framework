@@ -23,6 +23,8 @@
         "ext-openssl": "*",
         "illuminate/database": "8.x-dev",
         "jenssegers/blade": "dev-master",
+        "haydenpierce/class-finder": "^0.4.3",
+        "nesbot/carbon": "^2.55",
         "ryodevz/validator": "dev-main",
         "symfony/error-handler": "5.4.x-dev",
         "symfony/routing": "5.4.x-dev",
