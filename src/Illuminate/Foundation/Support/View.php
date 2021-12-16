@@ -2,7 +2,9 @@
 
 namespace Naventum\Framework\Illuminate\Foundation\Support;
 
+use HaydenPierce\ClassFinder\ClassFinder;
 use Jenssegers\Blade\Blade;
+use Illuminate\Support\Str;
 
 class View
 {
@@ -61,7 +63,7 @@ class View
     {
         $blade = new Blade($viewPath, base_path() . '/storage/framework/views');
 
-        $blade->compiler()->components($this->getComponentClasses());
+        $blade->compiler()->components($this->getComponents());
 
         $app = \Illuminate\Container\Container::getInstance();
 
@@ -75,8 +77,20 @@ class View
         return $this->makeView($blade);
     }
 
-    public function getComponentClasses()
+    private function getName($class)
     {
-        return configArray('components');
+        return Str::lower(str_replace(['App\View\Components\\', '\\'], ['', '.'], $class));
+    }
+
+    private function getComponents()
+    {
+        $classes = [];
+        $getClasses = ClassFinder::getClassesInNamespace('App\View\Components', ClassFinder::RECURSIVE_MODE);
+
+        foreach ($getClasses as $class) {
+            $classes[$this->getName($class)] = $class;
+        }
+
+        return $classes;
     }
 }

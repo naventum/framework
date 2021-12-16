@@ -2,10 +2,13 @@
 
 namespace Naventum\Framework\Illuminate\Support\Facades;
 
+use App\Models\Student;
+use Illuminate\Database\Eloquent\Model;
 use Naventum\Framework\Illuminate\Foundation\Support\Debug\Debugger;
 use Naventum\Framework\Illuminate\Foundation\Support\Init;
 use Naventum\Framework\Illuminate\Foundation\Support\Middleware;
 use Naventum\Framework\Illuminate\Foundation\Support\Provider;
+use ReflectionClass;
 
 class App extends Route
 {
@@ -34,14 +37,45 @@ class App extends Route
                 return $runMiddlewares;
             }
 
-            if (!$this->setModelBindings()) {
+            if (!$this->setClassBindings()) {
                 return abort(404);
             }
 
-            $this->setClassBindings();
-
             return $this->run();
         }
+    }
+
+    private function setClassBindings()
+    {
+        $params = [];
+
+        foreach ((new ReflectionClass($this->activeController))->getMethod($this->activeMethod)->getParameters() as $param) {
+            $paramType = $param->getType();
+            $paramPosition = $param->getPosition();
+
+            // class
+            if ($paramType) {
+                $paramName = $paramType->getName();
+                $routeClassBinding = new $paramName;
+
+                // Model
+                if ($routeClassBinding instanceof Model) {
+                    $model = $routeClassBinding::where($routeClassBinding->getRouteKeyName(), $this->activeRouteParams[$paramPosition])->first();
+
+                    if (!$model) {
+                        return false;
+                    }
+
+                    $params[$paramPosition] = $model;
+                }
+            } else {
+                $params[$paramPosition] = $this->activeRouteParams[$paramPosition];
+            }
+        }
+
+        $this->activeRouteParams = $params;
+
+        return true;
     }
 
     public function debug()
@@ -75,37 +109,6 @@ class App extends Route
         return Middleware::runAllBy($this->activeRoute['_middlewares']);
     }
 
-    private function setClassBindings()
-    {
-        foreach ($this->activeRoute['_classBindings'] as $name => $model) {
-            if (isset($this->activeRouteParams[$name])) {
-                $model = new $model($this->activeRouteParams);
-
-                $this->activeRouteParams[$name] = $model;
-            }
-        }
-
-        return true;
-    }
-
-    private function setModelBindings()
-    {
-        foreach ($this->activeRoute['_modelBindings'] as $name => $model) {
-            if (isset($this->activeRouteParams[$name])) {
-                $model = new $model;
-                $model = $model::where($model->getRouteKeyName(), $this->activeRouteParams[$name])->first();
-
-                if (!$model) {
-                    return abort(404);
-                }
-
-                $this->activeRouteParams[$name] = $model;
-            }
-        }
-
-        return true;
-    }
-
     private function setDefaultParams()
     {
         $params = $this->activeRoute;
@@ -116,7 +119,7 @@ class App extends Route
             }
         }
 
-        return $this->activeRouteParams = $params;
+        return $this->activeRouteParams = $this->values($params);
     }
 
     private function setActiveRoute($route)
@@ -137,12 +140,12 @@ class App extends Route
         $activeController = $this->activeController;
         $activeMethod = $this->activeMethod;
 
-        return $activeController->$activeMethod(...$this->getActiveRouteParams());
+        return $activeController->$activeMethod(...$this->activeRouteParams);
     }
 
-    private function getActiveRouteParams()
+    private function values(array $array)
     {
-        return array_values($this->activeRouteParams);
+        return array_values($array);
     }
 
     private function getRequestPath()

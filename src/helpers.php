@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Carbon;
 use Naventum\Framework\Illuminate\Foundation\Abort;
 use Naventum\Framework\Illuminate\Support\Config;
 use Naventum\Framework\Illuminate\Support\Paths;
@@ -18,6 +19,13 @@ if (!function_exists('makeView')) {
     function makeView(string $view, $data = [])
     {
         return View::makeWithoutEcho($view, null, $data);
+    }
+}
+
+if (!function_exists('now')) {
+    function now($tz = null)
+    {
+        return Carbon::now($tz);
     }
 }
 
@@ -103,43 +111,43 @@ if (!function_exists('env')) {
 }
 
 if (!function_exists('base_path')) {
-    function base_path()
+    function base_path(string $path = null)
     {
-        return Paths::$base_path;
+        return Paths::$base_path . $path;
     }
 }
 
 if (!function_exists('public_path')) {
-    function public_path()
+    function public_path(string $path = null)
     {
-        return Paths::$public_path;
+        return Paths::$public_path . $path;
     }
 }
 
 if (!function_exists('app_path')) {
-    function app_path()
+    function app_path(string $path = null)
     {
-        return Paths::$app_path;
+        return Paths::$app_path . $path;
     }
 }
 
 if (!function_exists('config_path')) {
-    function config_path()
+    function config_path(string $path = null)
     {
-        return Paths::$config_path;
+        return Paths::$config_path . $path;
     }
 }
 
 if (!function_exists('resource_path')) {
-    function resource_path()
+    function resource_path(string $path = null)
     {
-        return Paths::$resource_path;
+        return Paths::$resource_path . $path;
     }
 }
 
 if (!function_exists('view_path')) {
-    function view_path()
+    function view_path(string $path = null)
     {
-        return Paths::$view_path;
+        return Paths::$view_path . $path;
     }
 }
