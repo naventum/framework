@@ -12,4 +12,11 @@ class View
 
         return $blade->make();
     }
+
+    public static function makeWithoutEcho(string $view, string $viewDefaultPath = null, $data = [])
+    {
+        $blade = new SupportView($view, $viewDefaultPath, $data);
+
+        return $blade->makeWithoutEcho();
+    }
 }

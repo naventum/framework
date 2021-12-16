@@ -3,7 +3,6 @@
 namespace Naventum\Framework\Illuminate\Foundation\Support;
 
 use Jenssegers\Blade\Blade;
-use ReflectionClass;
 
 class View
 {
@@ -31,6 +30,15 @@ class View
         return $view;
     }
 
+    public function makeWithoutEcho()
+    {
+        $view = $this->getView(str_replace('.', '/', $this->view) . '.blade.php')->render();
+
+        $_SESSION['flash_data'] = [];
+
+        return $view;
+    }
+
     private function getView(string $viewWithExtension)
     {
         if (file_exists(view_path() . '/' . $viewWithExtension)) {
@@ -46,7 +54,7 @@ class View
 
     private function makeView($blade)
     {
-        return $blade->make($this->view, $this->data);;
+        return $blade->make($this->view, $this->data);
     }
 
     private function makeBlade(string $viewPath)

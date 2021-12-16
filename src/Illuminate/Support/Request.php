@@ -47,6 +47,8 @@ class Request
 
     public function all()
     {
+        $all = [];
+
         foreach ($_REQUEST as $key => $value) {
             $all[$key] = (is_string($value) ? trim($value) : $value);
         }
@@ -56,11 +58,11 @@ class Request
 
     public function get(string $key, $default = null)
     {
-        return (trim($_GET[$key]) ? trim($_GET[$key]) : $default);
+        return (isset($_GET[$key]) ? trim($_GET[$key]) : $default);
     }
 
     public function post(string $key, $default = null)
     {
-        return (trim($_POST[$key]) ? trim($_POST[$key]) : $default);
+        return (isset($_POST[$key]) ? trim($_POST[$key]) : $default);
     }
 }

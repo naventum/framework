@@ -14,6 +14,13 @@ if (!function_exists('view')) {
     }
 }
 
+if (!function_exists('makeView')) {
+    function makeView(string $view, $data = [])
+    {
+        return View::makeWithoutEcho($view, null, $data);
+    }
+}
+
 if (!function_exists('url')) {
     function url(string $path = null)
     {
