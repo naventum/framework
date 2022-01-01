@@ -6,32 +6,36 @@ class Middleware
 {
     protected static $middlewares = [];
 
-    public static function runAllBy(array $middlewares)
+    public static function runAllBy(array $middlewares, $closure)
     {
         foreach ($middlewares as $middleware) {
-            $response = static::run($middleware);
+            $response = static::run($middleware, $closure);
 
-            if ($response == false) {
+            if (!is_object($response)) {
                 return $response;
             }
         }
 
-        return true;
+        return $response();
     }
 
-    public static function runAll()
+    public static function runAll($closure)
     {
         foreach (static::$middlewares as $middleware) {
-            static::run($middleware);
+            static::run($middleware, $closure);
         }
     }
 
-    protected static function run($middleware)
+    protected static function run($middleware, $closure)
     {
         $middleware = new $middleware;
 
-        $run = $middleware->handle();
+        $next = function ($closure) {
+            return $closure;
+        };
 
-        return $run;
+        $response = $middleware->handle($next, $closure);
+
+        return $response;
     }
 }

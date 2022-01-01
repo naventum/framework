@@ -23,13 +23,9 @@ class Routing
 
     protected static $middlewares = [];
 
-    protected static $modelBindings = [];
-
-    protected static $classBindings = [];
-
     protected static $routes;
 
-    public static function __startRouting()
+    public static function init()
     {
         static::$routes = new RouteCollection;
     }
@@ -41,13 +37,20 @@ class Routing
 
     protected static function setRoute()
     {
-        $route = new SymfonyRoute(static::$path, [
-            '_controller' => static::$handle[0],
-            '_method' => static::$handle[1],
+        $route = [
             '_middlewares' => static::$middlewares,
-            '_modelBindings' => static::$modelBindings,
-            '_classBindings' => static::$classBindings,
-        ], [], [], '', [], static::$methods);
+        ];
+
+        if (is_array(static::$handle)) {
+            $route['_controller'] = static::$handle[0];
+            $route['_method'] = static::$handle[1];
+        }
+
+        if (is_object(static::$handle)) {
+            $route['_method'] = static::$handle;
+        }
+
+        $route = new SymfonyRoute(static::$path, $route, [], [], '', [], static::$methods);
         static::$routes->add(static::$name, $route);
 
         return new static;

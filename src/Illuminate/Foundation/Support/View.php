@@ -27,17 +27,6 @@ class View
 
         $_SESSION['flash_data'] = [];
 
-        echo $view;
-
-        return $view;
-    }
-
-    public function makeWithoutEcho()
-    {
-        $view = $this->getView(str_replace('.', '/', $this->view) . '.blade.php')->render();
-
-        $_SESSION['flash_data'] = [];
-
         return $view;
     }
 
