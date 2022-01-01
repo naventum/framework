@@ -26,7 +26,7 @@ class Init
 
     public function routing()
     {
-        Route::__startRouting();
+        Route::init();
 
         return $this;
     }

@@ -20,16 +20,7 @@ class Route extends Routing
 
     protected static $middlewares = [];
 
-    protected static $modelBindings = [];
-
-    protected static $classBindings = [];
-
-    public static function test()
-    {
-        return static::$routes->all();
-    }
-
-    public static function get(string $path, array $handle)
+    public static function get(string $path, $handle)
     {
         static::reset();
         static::$path = $path;
@@ -39,26 +30,12 @@ class Route extends Routing
         return new static;
     }
 
-    public static function post(string $path, array $handle)
+    public static function post(string $path, $handle)
     {
         static::reset();
         static::$path = $path;
         static::$handle = $handle;
         static::$methods = ['POST', 'HEAD'];
-
-        return new static;
-    }
-
-    public static function modelBindings(array $modelBindings)
-    {
-        static::$modelBindings = $modelBindings;
-
-        return new static;
-    }
-
-    public static function classBindings(array $classBindings)
-    {
-        static::$classBindings = $classBindings;
 
         return new static;
     }
