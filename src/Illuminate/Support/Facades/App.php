@@ -193,8 +193,15 @@ class App extends Route
             return $this->getResponse($activeMethod, $activeController);
         };
 
-        $next = $this->runMiddlewares($closure);
+        if(!empty($this->activeRoute['_middlewares'])) {
+            return $this->response($this->runMiddlewares($closure));
+        }
 
+        return $this->response($closure());
+    }
+    
+    private function response($next)
+    {
         return Response::make($next);
     }
 
