@@ -4,5 +4,5 @@ namespace Naventum\Framework\Illuminate\Support;
 
 interface Middleware
 {
-    public function handle();
+    public function handle($next, $closure);
 }
