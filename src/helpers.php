@@ -78,14 +78,14 @@ if (!function_exists('request')) {
 if (!function_exists('config')) {
     function config(string $filename)
     {
-        return Config::make($filename, '../config/')->config();
+        return Config::make($filename, config_path('/'))->config();
     }
 }
 
 if (!function_exists('configArray')) {
     function configArray(string $filename)
     {
-        return Config::make($filename, '../config/')->getArray();
+        return Config::make($filename, config_path('/'))->getArray();
     }
 }
 

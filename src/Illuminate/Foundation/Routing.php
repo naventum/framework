@@ -51,6 +51,7 @@ class Routing
         }
 
         $route = new SymfonyRoute(static::$path, $route, [], [], '', [], static::$methods);
+        
         static::$routes->add(static::$name, $route);
 
         return new static;

@@ -24,7 +24,6 @@ class App extends Route
     public function make()
     {
         $this->debug();
-
         $this->registerDefaultFlashData();
         $this->runProviders();
 
